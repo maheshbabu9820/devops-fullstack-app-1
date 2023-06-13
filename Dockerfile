@@ -31,9 +31,9 @@ EXPOSE 8080
 
 # Set environment variables for database connection
 ENV DB_HOST localhost
-ENV DB_USER root
-ENV DB_PASSWORD password
-ENV DB_NAME dbname
+ENV DB_USER ''
+ENV DB_PASSWORD ''
+ENV DB_NAME ''
 ENV DB_PORT 5432
 
 # Install PostgreSQL client
