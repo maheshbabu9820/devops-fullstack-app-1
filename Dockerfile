@@ -1,30 +1,43 @@
-# Use the official Go 1.19 base image
-FROM golang:1.19
+# Use the official Golang base image
+FROM golang:latest AS builder
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy the Go module files to the working directory
-COPY go.mod go.sum ./
+# Copy the Go module files
+COPY go.mod .
+COPY go.sum .
 
 # Download the Go module dependencies
 RUN go mod download
 
-# Copy the rest of the application source code to the working directory
+# Copy the application source code into the container
 COPY . .
 
-# Build the Go application
-RUN go build -o main .
+# Build the Go Long binary
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
 
-# Expose port 8080 to the outside world
+# Use a minimal base image for the final container
+FROM alpine:latest
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the binary from the builder stage
+COPY --from=builder /app/app .
+
+# Expose the port on which the application listens
 EXPOSE 8080
 
-# Set the environment variables
-ENV DB_HOST=<POSTGRES_HOST> \
-    DB_USER=<POSTGRES_USER> \
-    DB_PASSWORD=<POSTGRES_PASSWORD> \
-    DB_NAME=<POSTGRES_DB_NAME> \
-    DB_PORT=<POSTGRES_PORT>
+# Set environment variables for database connection
+ENV DB_HOST localhost
+ENV DB_USER root
+ENV DB_PASSWORD password
+ENV DB_NAME dbname
+ENV DB_PORT 5432
 
-# Start the Go application
-CMD ["./main"]
+# Install PostgreSQL client
+RUN apk update && apk add postgresql-client
+
+# Run the Go Long database application
+CMD ["./app"]
