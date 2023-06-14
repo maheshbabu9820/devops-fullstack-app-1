@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: react-app
-          image: public.ecr.aws/x1l1i9y8/demoapplication:V1/reactapp:V1
+          image: public.ecr.aws/x1l1i9y8/demoapplication:V1
           ports:
             - containerPort: 3000  # Port on which the React app listens            
 ---
