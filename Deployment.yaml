@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: employees-app
+  name: myapp
 spec:
-  serviceName: employees-app
+  serviceName: myapp
   replicas: 1
   selector:
     matchLabels:
-      app: employees-app
+      app: myapp
   template:
     metadata:
       labels:
-        app: employees-app
+        app: myapp
     spec:
       containers:
-      - name: employees-app
-        image: public.ecr.aws/x1l1i9y8/demoapplication:V2
+      - name: myapp
+        image: your-golang-app-image
         ports:
         - containerPort: 8080
         env:
@@ -44,6 +44,7 @@ spec:
       resources:
         requests:
           storage: 1Gi
+
 ---
 apiVersion: v1
 kind: Service
