@@ -9,7 +9,7 @@ spec:
   selector:
     matchLabels:
       app: employees-app
-      template: null
+      template: 
     metadata:
       labels:
         app: employees-app
@@ -45,7 +45,7 @@ spec:
           - ReadWriteOnce
         resources:
           requests:
-            storage: 1Gi
+            storage: 800M
 
 ---
 apiVersion: v1
@@ -53,7 +53,8 @@ kind: Service
 metadata: 
  name: employees-app-service
 spec:
-  selector: app:employees-app
+  selector: 
+   app: employees-app
   ports:
     - protocol: TCP
       port: 80
