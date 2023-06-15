@@ -1,62 +1,61 @@
----
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: employees-app
 spec:
-  serviceName: employees-app
   replicas: 1
+  serviceName: employees-app
   selector:
     matchLabels:
       app: employees-app
-      template: 
+  template:
     metadata:
       labels:
         app: employees-app
     spec:
       containers:
-        - name: employees-app
-          image: public.ecr.aws/x1l1i9y8/demoapplication:V2
-          ports:
-            - containerPort: 8080
-          env:
-            - name: DB_HOST
-              value: employees-app-postgres
-            - name: DB_PORT
-              value: "5432"
-            - name: DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-credentials
-                  key: username
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-credentials
-                  key: password
-          volumeMounts:
-            - name: data
-              mountPath: /app/data
+      - name: employees-app
+        image: public.ecr.aws/x1l1i9y8/demoapplication:V2
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DB_HOST
+          value: employees-app-postgres
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-credentials
+              key: username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-credentials
+              key: password
+        volumeMounts:
+        - name: data
+          mountPath: /app/data
   volumeClaimTemplates:
-    - metadata:
-        name: data
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 800M
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 800M
 
 ---
 apiVersion: v1
 kind: Service
-metadata: 
- name: employees-app-service
+metadata:
+  name: employees-app-service
 spec:
-  selector: 
-   app: employees-app
+  selector:
+    app: employees-app
   ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 8080
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
   type: NodePort
