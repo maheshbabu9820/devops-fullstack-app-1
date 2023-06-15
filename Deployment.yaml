@@ -1,26 +1,26 @@
-apiVersion: apps/v2
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: myapp
+  name: employees-app
 spec:
-  serviceName: myapp
+  serviceName: employees-app
   replicas: 1
   selector:
     matchLabels:
-      app: myapp
-  template:
+      app: employees-app 
+      template:
     metadata:
       labels:
-        app: myapp
+        app: employees-app
     spec:
       containers:
-      - name: myapp
+      - name: employees-app
         image: your-golang-app-image
         ports:
         - containerPort: 8080
         env:
         - name: DB_HOST
-          value: myapp-postgres
+          value: employees-app-postgres
         - name: DB_PORT
           value: "5432"
         - name: DB_USER
