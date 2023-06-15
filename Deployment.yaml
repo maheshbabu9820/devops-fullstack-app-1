@@ -1,9 +1,10 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: employees-app-deployment
+  name: employees-app
 spec:
-  replicas: 2
+  serviceName: employees-app
+  replicas: 1
   selector:
     matchLabels:
       app: employees-app
@@ -13,21 +14,46 @@ spec:
         app: employees-app
     spec:
       containers:
-        - name: employees-app
-          image: public.ecr.aws/x1l1i9y8/demoapplication:V2
-          ports:
-            - containerPort: 8080
-
+      - name: employees-app
+        image: public.ecr.aws/x1l1i9y8/demoapplication:V2
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DB_HOST
+          value: myapp-postgres
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-credentials
+              key: username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-credentials
+              key: password
+        volumeMounts:
+        - name: data
+          mountPath: /app/data
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: employees-app-service
+  name:employees-app-service
 spec:
   selector:
-    app: employees-app
+    app:employees-app
   ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 8080
-  type: LoadBalancer
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+  type:  NodePort
