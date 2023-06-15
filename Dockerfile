@@ -23,7 +23,7 @@ FROM nginx:latest
 COPY --from=builder /app/build /usr/share/nginx/html
 
 # Expose the default port of the nginx web server
-EXPOSE 80
+EXPOSE 3000
 
 # Start the nginx web server when the container starts
 CMD ["nginx", "-g", "daemon off;"]
