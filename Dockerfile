@@ -27,7 +27,7 @@ WORKDIR /app
 COPY --from=builder /app/app .
 
 # Expose the port on which the application listens
-EXPOSE 8080
+EXPOSE 9000
 
 # Set environment variables for database connection
 ENV DB_HOST localhost
