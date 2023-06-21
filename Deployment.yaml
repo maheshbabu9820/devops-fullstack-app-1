@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: react-app-deployment
 spec:
-  replicas: 1  # Number of desired replicas
+  replicas: 2  
   selector:
     matchLabels:
       app: react-app
@@ -16,7 +16,7 @@ spec:
         - name: react-app
           image: public.ecr.aws/x1l1i9y8/demoapplication:V1
           ports:
-            - containerPort: 3000  # Port on which the React app listens            
+            - containerPort: 3000             
 ---
 apiVersion: v1
 kind: Service
@@ -27,6 +27,6 @@ spec:
     app: react-app
   ports:
     - protocol: TCP
-      port: 80  # Port on which the service will be exposed
-      targetPort: 3000  # Port on which the React app listens within the pods
-  type: NodePort  # Expose the service externally using a cloud provider's load balancer
+      port: 3000  
+      
+  type: LoadBalancer  
