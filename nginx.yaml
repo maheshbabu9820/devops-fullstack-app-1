@@ -15,7 +15,7 @@ spec:
     app: nginx
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: deployment
 metadata:
   name: web
 spec:
